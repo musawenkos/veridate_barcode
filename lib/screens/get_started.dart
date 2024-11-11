@@ -1,11 +1,15 @@
 // lib/get_started_screen.dart
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:veridate_barcode/screens/product_information.dart';
 import '../UI/app_colors.dart';
+import '../services/firebase/product.dart';
 import '../services/product_validation_api.dart';
 
 class GetStartedScreen extends StatelessWidget {
+  final ProductFireStore _productFireStore = ProductFireStore();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,8 +62,13 @@ class GetStartedScreen extends StatelessWidget {
                   ),
                 ),
                 onPressed: () async {
+                  //Find
                   final productData = await ProductValidationApi.validateProduct('6001056412919');
 
+                  //Save
+                  _productFireStore.addProduct(productData);
+
+                  //Display
                   Navigator.push(
                     context,
                     MaterialPageRoute(

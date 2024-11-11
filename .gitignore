@@ -35,3 +35,54 @@ google-services.json
 # .gitignore
 .env
 
+# Flutter/Dart related files
+.pub/
+.dart_tool/
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies
+.metadata
+
+# iOS specific files
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+ios/Flutter/App.framework
+ios/Flutter/ephemeral
+ios/Runner.xcworkspace/
+ios/Pods/
+ios/Podfile.lock
+ios/Runner/GeneratedPluginRegistrant.*
+
+# Android specific files
+android/.gradle
+android/app/debug
+android/app/profile
+android/app/release
+android/local.properties
+android/app/google-services.json
+android/app/app.keystore
+**/*.keystore
+
+# Firebase and Environment files
+*.env
+*.env.*
+ios/Runner/GoogleService-Info.plist
+
+# IntelliJ related files
+
+*.ipr
+*.iws
+
+# VS Code related files
+.vscode/
+
+# MacOS specific files
+macos/Flutter/ephemeral/
+macos/Pods/
+macos/Podfile.lock
+.DS_Store
+
+# Web specific files
+web/firebase-messaging-sw.js
