@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../UI/app_colors.dart';
+import 'package:intl/intl.dart';
 
 class ProductInformationScreen extends StatelessWidget {
   final Map<String, dynamic>? productData;
@@ -8,12 +10,26 @@ class ProductInformationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DateTime? expirationDate;
+    if (productData?['expirationDate'] is Timestamp) {
+      expirationDate = (productData?['expirationDate'] as Timestamp).toDate();
+    } else if (productData?['expirationDate'] is String) {
+      try {
+        // Parsing "dd/MM/yyyy" format
+        expirationDate = DateFormat("dd/MM/yyyy").parse(productData?['expirationDate']);
+      } catch (e) {
+        print("Error parsing expiration date: $e");
+      }
+    }
+
+    final daysLeft = expirationDate?.difference(DateTime.now()).inDays;
+    final isExpired = daysLeft != null && daysLeft < 0;
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: AppColors.primaryText,
         elevation: 0,
-        title: Text(
+        title: const Text(
           'Product Information',
           style: TextStyle(color: AppColors.background),
         ),
@@ -117,6 +133,49 @@ class ProductInformationScreen extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+              SizedBox(height: 20),
+              // Expiration Status Box
+              Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: isExpired ? Colors.red[100] : Colors.green[100],
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: isExpired ? Colors.red : Colors.green,
+                    width: 2,
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      isExpired
+                          ? "Product Expired in ${daysLeft} ${daysLeft == 1 ? 'day' : 'days'}"
+                          : "Product Valid for ${daysLeft} ${daysLeft == 1 ? 'day' : 'days'}",
+                      style: TextStyle(
+                        color: isExpired ? Colors.red : Colors.green,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    if (!isExpired && expirationDate != null)
+                      Text(
+                        "Expires on: ${DateFormat('MMM dd, yyyy').format(expirationDate)}",
+                        style: TextStyle(
+                          color: AppColors.primaryText,
+                          fontSize: 14,
+                        ),
+                      ),
+                    if (isExpired)
+                      Text(
+                        "Expires on: ${DateFormat('MMM dd, yyyy').format(expirationDate!)}",
+                        style: TextStyle(
+                          color: AppColors.primaryText,
+                          fontSize: 14,
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ],
           ),

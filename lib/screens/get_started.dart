@@ -3,12 +3,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:veridate_barcode/screens/product_information.dart';
+import 'package:veridate_barcode/services/firebase/auth/auth_service.dart';
 import '../UI/app_colors.dart';
-import '../services/firebase/product.dart';
+import '../services/firebase/store/product.dart';
 import '../services/product_validation_api.dart';
 
 class GetStartedScreen extends StatelessWidget {
   final ProductFireStore _productFireStore = ProductFireStore();
+  final AuthService _authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,7 @@ class GetStartedScreen extends StatelessWidget {
             // App Logo or Illustration
             Center(
               child: Image.asset(
-                'assets/images/logo.png', // Replace with the path to your logo or illustration
+                'assets/images/logo.png',
                 height: 100,
               ),
             ),
@@ -62,18 +64,33 @@ class GetStartedScreen extends StatelessWidget {
                   ),
                 ),
                 onPressed: () async {
-                  //Find
-                  final productData = await ProductValidationApi.validateProduct('6001056412919');
+                  String barcode = '6001056412919';
+                  var productData = await _productFireStore.getProductByBarcode(barcode);
+                  if (productData != null) {
+                    print("Product found in Firestore.");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ProductInformationScreen(productData: productData)),
+                    );
+                  } else {
+                    // Product not found, fetch from API
+                    print("Product not found in Firestore, fetching from API...");
+                    productData = await ProductValidationApi.validateProduct(barcode);
 
-                  //Save
-                  _productFireStore.addProduct(productData);
+                    if (productData != null) {
+                      // Add product to Firestore
+                      await _productFireStore.addProduct(productData,_authService.getCurrentUser()!.email.toString());
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ProductInformationScreen(productData: productData)),
+                      );
+                    } else {
+                      print("Error fetching product from API.");
+                    }
+                  }
 
-                  //Display
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ProductInformationScreen(productData: productData)),
-                  );
                 },
                 child: const Text(
                   "Get Started",
