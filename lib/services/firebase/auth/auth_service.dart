@@ -22,6 +22,7 @@ class AuthService {
         password: password,
       );
 
+      await userCredential.user?.updateDisplayName("$firstName $lastName");
       User? user = userCredential.user;
 
       // Save additional user information in Firestore

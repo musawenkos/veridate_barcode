@@ -67,7 +67,6 @@ android/app/app.keystore
 
 # Firebase and Environment files
 *.env
-*.env.*
 ios/Runner/GoogleService-Info.plist
 
 # IntelliJ related files

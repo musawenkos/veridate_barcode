@@ -2,11 +2,14 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:veridate_barcode/screens/barcode_scanner.dart';
+import 'package:veridate_barcode/screens/dashboard.dart';
+import 'package:veridate_barcode/screens/main_screen.dart';
 import 'package:veridate_barcode/screens/product_information.dart';
 import 'package:veridate_barcode/services/firebase/auth/auth_service.dart';
 import '../UI/app_colors.dart';
 import '../services/firebase/store/product.dart';
-import '../services/product_validation_api.dart';
+import '../services/api/product_validation_api.dart';
 
 class GetStartedScreen extends StatelessWidget {
   final ProductFireStore _productFireStore = ProductFireStore();
@@ -64,7 +67,17 @@ class GetStartedScreen extends StatelessWidget {
                   ),
                 ),
                 onPressed: () async {
-                  String barcode = '6001056412919';
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const MainScreen()),
+                  );
+
+
+
+
+                 /* String barcode = '6001056412919';
                   var productData = await _productFireStore.getProductByBarcode(barcode);
                   if (productData != null) {
                     print("Product found in Firestore.");
@@ -89,7 +102,7 @@ class GetStartedScreen extends StatelessWidget {
                     } else {
                       print("Error fetching product from API.");
                     }
-                  }
+                  }*/
 
                 },
                 child: const Text(

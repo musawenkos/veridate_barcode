@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:veridate_barcode/screens/get_started.dart';
+import 'package:veridate_barcode/screens/verification.dart';
 
 import '../UI/app_colors.dart';
 import '../services/firebase/auth/auth_service.dart';
@@ -26,34 +27,54 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final reenterPassword = _reenterPasswordController.text.trim();
     final phoneNumber = _phoneNumberController.text.trim();
 
+    // Check if passwords match
     if (password != reenterPassword) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Passwords do not match")),
+        const SnackBar(content: Text("Passwords do not match")),
       );
       return;
     }
 
-    final user = await _authService.signUp(
-      email: email,
-      password: password,
-      firstName: firstName,
-      lastName: lastName,
-      phoneNumber: phoneNumber,
-    );
-
-    if (user != null) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => GetStartedScreen()),
+    try {
+      // Sign up the user
+      final user = await _authService.signUp(
+        email: email,
+        password: password,
+        firstName: firstName,
+        lastName: lastName,
+        phoneNumber: phoneNumber,
       );
-    } else {
+
+      if (user != null) {
+        // Send verification email
+        await user.sendEmailVerification();
+
+        // Navigate to VerificationScreen
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => VerificationScreen(email: email),
+          ),
+        );
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Account created. Please verify your email.")),
+        );
+      } else {
+        // Sign up failed
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Sign up failed. Please try again.')),
+        );
+      }
+    } catch (e) {
+      print("Error during sign up: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Sign up failed. Please try again.')),
+        SnackBar(content: Text('Error: $e')),
       );
     }
   }
 
-  @override
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

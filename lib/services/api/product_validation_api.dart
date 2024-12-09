@@ -1,8 +1,8 @@
-// lib/services/product_validation_api.dart
+// lib/services/api/product_validation_api.dart
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'config.dart';
+import '../config.dart';
 
 class ProductValidationApi {
   // Validate product by barcode
