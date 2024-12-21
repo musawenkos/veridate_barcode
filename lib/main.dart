@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:veridate_barcode/screens/get_started.dart';
-import 'package:veridate_barcode/screens/login_screen.dart';
-import 'package:veridate_barcode/screens/signup_screen.dart';
 import 'package:veridate_barcode/screens/splashscreen.dart';
 import 'firebase_options.dart';
 

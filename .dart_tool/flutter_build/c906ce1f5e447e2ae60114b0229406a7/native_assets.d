@@ -1,1 +1,0 @@
- C:\\Users\\ndlel\\Documents\\Projects\\Veridate\ Project\\veridate_barcode\\.dart_tool\\flutter_build\\c906ce1f5e447e2ae60114b0229406a7\\native_assets.yaml: 

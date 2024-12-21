@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:veridate_barcode/screens/product_information.dart';
 import '../UI/app_colors.dart';
-import '../services/firebase/auth/auth_service.dart';
 
 class BarcodeHistoryScreen extends StatelessWidget {
   final String userEmail;
@@ -12,33 +11,31 @@ class BarcodeHistoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(userEmail);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
           "Scan History",
           style: TextStyle(color: AppColors.background),
         ),
-        backgroundColor: AppColors.primaryText, // App primary text color
+        backgroundColor: AppColors.primaryText,
       ),
-      backgroundColor: AppColors.background, // App background color
+      backgroundColor: AppColors.background,
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('products')
-            .where('scannedBy', isEqualTo: userEmail) // Filter by authenticated user email
-            .orderBy('scannedAt', descending: false)
+            .where('scannedAt', isGreaterThanOrEqualTo: DateTime.now().subtract(const Duration(days: 31)))
+            .where('scannedBy', isEqualTo: userEmail)
+            .orderBy('scannedAt', descending: true)
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return const Center(
               child: Text(
-                "No scanned products found.",
+                "No scanned products found in the last 31 days.",
                 style: TextStyle(fontSize: 16, color: AppColors.primaryText),
               ),
             );
@@ -57,7 +54,7 @@ class BarcodeHistoryScreen extends StatelessWidget {
                   ? DateTime.tryParse(product['expirationDate'])
                   : null;
 
-              // Check expiration status
+              // Calculate expiration status
               final daysLeft = expirationDate?.difference(DateTime.now()).inDays;
               final isExpired = daysLeft != null && daysLeft < 0;
 
@@ -67,16 +64,26 @@ class BarcodeHistoryScreen extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                color: Colors.white,
                 child: ListTile(
                   leading: product['imageUrl'] != null && product['imageUrl'] != ''
-                      ? Image.network(
-                    product['imageUrl'],
+                      ? ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(
+                      product['imageUrl'],
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                      : Container(
                     width: 50,
                     height: 50,
-                    fit: BoxFit.cover,
-                  )
-                      : const Icon(Icons.image_not_supported, size: 50),
+                    decoration: BoxDecoration(
+                      color: AppColors.grayLight,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(Icons.image_not_supported, size: 30, color: Colors.grey),
+                  ),
                   title: Text(
                     product['name'] ?? "Unknown Product",
                     style: const TextStyle(
@@ -89,7 +96,7 @@ class BarcodeHistoryScreen extends StatelessWidget {
                     children: [
                       Text(
                         product['description']?.length > 30
-                            ? "${product['description']?.substring(0, 30)}..." // Shorten description
+                            ? "${product['description']?.substring(0, 30)}..."
                             : product['description'] ?? "No description available.",
                         style: const TextStyle(fontSize: 12, color: AppColors.secondaryText),
                       ),
@@ -112,7 +119,6 @@ class BarcodeHistoryScreen extends StatelessWidget {
                     ],
                   ),
                   onTap: () {
-                    // Handle tap on product (e.g., navigate to product details)
                     Navigator.push(
                       context,
                       MaterialPageRoute(

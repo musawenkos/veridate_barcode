@@ -41,7 +41,9 @@ dependencies:
   cloud_firestore: ^5.4.5
   firebase_auth: ^5.3.3
   intl_utils: ^2.8.7
-  mobile_scanner: ^6.0.2
+  flutter_barcode_scanner: ^2.0.0
+  google_mlkit_barcode_scanning: ^0.13.0
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:

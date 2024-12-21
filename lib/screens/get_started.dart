@@ -2,7 +2,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:veridate_barcode/screens/barcode_scanner.dart';
 import 'package:veridate_barcode/screens/dashboard.dart';
 import 'package:veridate_barcode/screens/main_screen.dart';
 import 'package:veridate_barcode/screens/product_information.dart';

@@ -41,6 +41,21 @@ class ProductFireStore {
     }
   }
 
+  Future<DocumentSnapshot> getProductDocumentByBarcode(String gtin, {required String spazaId}) async {
+    try {
+      // Fetch the product document from Firestore
+      return await _firestore
+          .collection('spazaShops') // Adjust collection path if needed
+          .doc(spazaId)
+          .collection('products') // Sub-collection for products under Spaza
+          .doc(gtin) // Document ID is the GTIN
+          .get();
+    } catch (e) {
+      print("Error fetching product document: $e");
+      throw Exception("Failed to fetch product document");
+    }
+  }
+
 
   Future<Map<String, dynamic>?> getProductByBarcode(String barcode, {String? spazaId}) async {
     try {

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:veridate_barcode/screens/subscription_payment.dart';
 import '../UI/app_colors.dart';
@@ -198,6 +200,14 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       );
       return;
     }
+
+    final user = FirebaseAuth.instance.currentUser;
+    FirebaseFirestore.instance.collection('subscriptions').add({
+      'userEmail': user!.email,
+      'plan': _selectedPlan,
+      'paymentMethod': _paymentMethod,
+      'subscribedAt': FieldValue.serverTimestamp(),
+    });
 
     // Navigate to the payment screen
     Navigator.push(
