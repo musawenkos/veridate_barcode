@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:veridate_barcode/screens/barcode_scanner.dart';
 import 'package:veridate_barcode/screens/inventory_screen.dart';
 import 'package:veridate_barcode/screens/spaza_shop.dart';
-import 'package:veridate_barcode/test_screen/barcode_scan.dart';
 import '../services/firebase/auth/auth_service.dart';
 import 'barcode_check.dart';
 import 'barcode_history.dart';
@@ -120,7 +120,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                          const BarcodeScan()),
+                          const BarcodeScannerScreen()),
                     );
                   }
                       : null,
